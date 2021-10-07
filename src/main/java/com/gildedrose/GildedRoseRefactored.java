@@ -11,47 +11,46 @@ class GildedRoseRefactored {
     }
 
     public void updateQuality() {
-        for (int i = 0; i < items.length; i++) {
-            Item currentItem = items[i];
+        for (Item currentItem : items) {
+            if (!isItemAgedBrie(currentItem)
+            && !isItemBackstagePassConcert(currentItem)
+            && !isItemSulfurasHandOfRagnarok(currentItem)
+                    && currentItem.quality > 0
+            ) {
 
-            if (!currentItem.name.equals(AGED_BRIE)
-                    && !currentItem.name.equals(BACKSTAGE_PASSES_CONCERT)) {
-                if (currentItem.quality > 0 && !currentItem.name.equals(SULFURAS_HAND_OF_RAGNAROK)) {
-                        currentItem.quality = currentItem.quality - 1;
+                currentItem.quality -= 1;
+            }
 
-                }
-            } else {
-                if (currentItem.quality < 50) {
-                    currentItem.quality = currentItem.quality + 1;
+            if (currentItem.quality < 50) {
+                currentItem.quality += 1;
 
-                    if (currentItem.name.equals(BACKSTAGE_PASSES_CONCERT)) {
-                        if (currentItem.sellIn < 11 && currentItem.quality < 50) {
-                                currentItem.quality = currentItem.quality + 1;
+                if (isItemBackstagePassConcert(currentItem)) {
+                    if (currentItem.sellIn < 11 && currentItem.quality < 50) {
+                        currentItem.quality += 1;
 
-                        }
+                    }
 
-                        if (currentItem.sellIn < 6 && currentItem.quality < 50) {
-                                currentItem.quality = currentItem.quality + 1;
+                    if (currentItem.sellIn < 6 && currentItem.quality < 50) {
+                        currentItem.quality += 1;
 
-                        }
                     }
                 }
             }
 
-            if (!currentItem.name.equals(SULFURAS_HAND_OF_RAGNAROK)) {
-                currentItem.sellIn = currentItem.sellIn - 1;
+            if (!isItemSulfurasHandOfRagnarok(currentItem)) {
+                currentItem.sellIn -= 1;
             }
 
             if (currentItem.sellIn < 0) {
-                if (!currentItem.name.equals(AGED_BRIE)) {
-                    if (!currentItem.name.equals(BACKSTAGE_PASSES_CONCERT)) {
+                if (!isItemAgedBrie(currentItem)) {
+                    if (!isItemBackstagePassConcert(currentItem)) {
                         if (currentItem.quality > 0 &&
-                                !currentItem.name.equals(SULFURAS_HAND_OF_RAGNAROK)) {
-                                currentItem.quality = currentItem.quality - 1;
+                                !isItemSulfurasHandOfRagnarok(currentItem)) {
+                            currentItem.quality -= 1;
 
                         }
                     } else {
-                        currentItem.quality = currentItem.quality - currentItem.quality;
+                        currentItem.quality = 0;
                     }
                 } else {
                     if (currentItem.quality < 50) {
@@ -60,5 +59,17 @@ class GildedRoseRefactored {
                 }
             }
         }
+    }
+
+    private boolean isItemSulfurasHandOfRagnarok(Item item) {
+        return item.name.equals(SULFURAS_HAND_OF_RAGNAROK);
+    }
+
+    private boolean isItemBackstagePassConcert(Item item) {
+        return item.name.equals(BACKSTAGE_PASSES_CONCERT);
+    }
+
+    private boolean isItemAgedBrie(Item item) {
+        return item.name.equals(AGED_BRIE);
     }
 }
