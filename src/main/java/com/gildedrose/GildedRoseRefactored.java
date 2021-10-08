@@ -11,59 +11,77 @@ class GildedRoseRefactored {
     }
 
     public void updateQuality() {
-        for (Item currentItem : items) {
-            if (!isItemAgedBrie(currentItem)
-            && !isItemBackstagePassConcert(currentItem)
-            && !isItemSulfurasHandOfRagnarok(currentItem)
-                    && currentItem.quality > 0
+        for (Item item : items) {
+            System.out.println("name: "+item.name);
+            System.out.println("quality: "+item.quality);
+            System.out.println("sellIn: "+item.sellIn);
+
+            if (!isItemAgedBrie(item)
+            && !isItemBackstagePassConcert(item)
+            && !isItemSulfurasHandOfRagnarok(item)
+                    && isQualityGreaterThan(item, 0)
             ) {
 
-                currentItem.quality -= 1;
+                decreaseQuality(item,1);
             }
 
-            if (currentItem.quality < 50) {
-                currentItem.quality += 1;
+            if (isQualityLessThan(item, 50)) {
+                increaseQuality(item,1);
 
-                if (isItemBackstagePassConcert(currentItem)) {
-                    if (currentItem.sellIn < 11 && currentItem.quality < 50) {
-                        currentItem.quality += 1;
+                if (isItemBackstagePassConcert(item)) {
+                    if (isSellInLessThan(item,11)
+                            && isQualityLessThan(item,50)) {
+                        increaseQuality(item,1);
 
                     }
 
-                    if (currentItem.sellIn < 6 && currentItem.quality < 50) {
-                        currentItem.quality += 1;
+                    if (isSellInLessThan(item, 6)
+                            && isQualityLessThan(item,50)) {
+                        increaseQuality(item,1);
 
                     }
                 }
             }
 
-            if (!isItemSulfurasHandOfRagnarok(currentItem)) {
-                currentItem.sellIn -= 1;
+            if (!isItemSulfurasHandOfRagnarok(item)) {
+                item.sellIn -= 1;
             }
 
-            if (currentItem.sellIn < 0) {
-                if (!isItemAgedBrie(currentItem)) {
-                    if (!isItemBackstagePassConcert(currentItem)) {
-                        if (currentItem.quality > 0 &&
-                                !isItemSulfurasHandOfRagnarok(currentItem)) {
-                            currentItem.quality -= 1;
+            if (isSellInLessThan(item,0)) {
+                if (!isItemAgedBrie(item)) {
+                    if (!isItemBackstagePassConcert(item)) {
+                        if (isQualityGreaterThan(item, 0) &&
+                                !isItemSulfurasHandOfRagnarok(item)) {
+                            decreaseQuality(item,1);
 
                         }
                     } else {
-                        currentItem.quality = 0;
+                        item.quality = 0;
                     }
                 } else {
-                    if (currentItem.quality < 50) {
-                        currentItem.quality = currentItem.quality + 1;
+                    if (isQualityLessThan(item,50)) {
+                        increaseQuality(item,1);
                     }
                 }
             }
+            System.out.println("name: "+item.name);
+            System.out.println("quality: "+item.quality);
+            System.out.println("sellIn: "+item.sellIn);
+
         }
     }
 
-    private boolean isItemSulfurasHandOfRagnarok(Item item) {
-        return item.name.equals(SULFURAS_HAND_OF_RAGNAROK);
-    }
+    private void decreaseQuality(Item item, Integer quantity){item.quality -= quantity;}
+
+    private void increaseQuality(Item item, Integer quantity){item.quality += quantity;}
+
+    private boolean isSellInLessThan(Item item, Integer number) {return item.sellIn < number;}
+
+    private boolean isQualityGreaterThan(Item item, Integer number) {return item.quality > number;}
+
+    private boolean isQualityLessThan(Item item, Integer number) {return item.quality < number;}
+
+    private boolean isItemSulfurasHandOfRagnarok(Item item) {return item.name.equals(SULFURAS_HAND_OF_RAGNAROK);}
 
     private boolean isItemBackstagePassConcert(Item item) {
         return item.name.equals(BACKSTAGE_PASSES_CONCERT);
