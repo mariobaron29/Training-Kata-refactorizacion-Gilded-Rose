@@ -1,5 +1,7 @@
 package com.gildedrose;
 
+import com.gildedrose.item.Item;
+
 class GildedRoseRefactored {
     Item[] items;
     static final String BACKSTAGE_PASSES_CONCERT =  "Backstage passes to a TAFKAL80ETC concert";
@@ -28,23 +30,17 @@ class GildedRoseRefactored {
             if (isQualityLessThan(item, 50)) {
                 increaseQuality(item,1);
 
-                if (isItemBackstagePassConcert(item)) {
-                    if (isSellInLessThan(item,11)
-                            && isQualityLessThan(item,50)) {
+                    if (isItemBackstagePassConcert(item)
+                            && isQualityLessThan(item,50)
+                            && isSellInLessThan(item,11)
+                            || isSellInLessThan(item, 6)) {
                         increaseQuality(item,1);
 
                     }
-
-                    if (isSellInLessThan(item, 6)
-                            && isQualityLessThan(item,50)) {
-                        increaseQuality(item,1);
-
-                    }
-                }
             }
 
             if (!isItemSulfurasHandOfRagnarok(item)) {
-                item.sellIn -= 1;
+                decreaseSellInValue(item,1);
             }
 
             if (isSellInLessThan(item,0)) {
@@ -56,13 +52,11 @@ class GildedRoseRefactored {
 
                         }
                     } else {
-                        item.quality = 0;
+                        assignLowestQualityToItem(item);
                     }
-                } else {
-                    if (isQualityLessThan(item,50)) {
+                } else if (isQualityLessThan(item,50)) {
                         increaseQuality(item,1);
                     }
-                }
             }
             System.out.println("name: "+item.name);
             System.out.println("quality: "+item.quality);
@@ -70,6 +64,10 @@ class GildedRoseRefactored {
 
         }
     }
+
+    private void decreaseSellInValue(Item item, Integer number) {item.sellIn -= number;}
+
+    private void assignLowestQualityToItem(Item item) {item.quality = 0;}
 
     private void decreaseQuality(Item item, Integer quantity){item.quality -= quantity;}
 
